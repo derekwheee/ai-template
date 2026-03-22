@@ -27,12 +27,13 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddEntityFrameworkStores<AppDbContext>()
 .AddDefaultTokenProviders();
 
-// JWT auth
+// JWT auth — capture all values at startup so signing and validation always use the same key
 var jwtKey = builder.Configuration["Jwt:Key"];
 if (string.IsNullOrEmpty(jwtKey))
     throw new InvalidOperationException("Jwt:Key is not configured. Set it in appsettings.json or via an environment variable.");
-var jwtIssuer = builder.Configuration["Jwt:Issuer"]!;
-var jwtAudience = builder.Configuration["Jwt:Audience"]!;
+var jwtIssuer    = builder.Configuration["Jwt:Issuer"]!;
+var jwtAudience  = builder.Configuration["Jwt:Audience"]!;
+var jwtExpiryMin = int.Parse(builder.Configuration["Jwt:ExpiryMinutes"] ?? "60");
 
 builder.Services.AddAuthentication(options =>
 {
@@ -100,14 +101,13 @@ auth.MapPost("/register", async (
 
 auth.MapPost("/login", async (
     LoginRequest request,
-    UserManager<ApplicationUser> userManager,
-    IConfiguration config) =>
+    UserManager<ApplicationUser> userManager) =>
 {
     var user = await userManager.FindByNameAsync(request.Username);
     if (user is null || !await userManager.CheckPasswordAsync(user, request.Password))
         return Results.Unauthorized();
 
-    var token = GenerateJwtToken(user, config);
+    var token = GenerateJwtToken(user, jwtKey, jwtIssuer, jwtAudience, jwtExpiryMin);
     return Results.Ok(new { token, username = user.UserName });
 });
 
@@ -119,12 +119,10 @@ auth.MapGet("/me", (ClaimsPrincipal principal) => Results.Ok(new
 
 app.Run();
 
-static string GenerateJwtToken(ApplicationUser user, IConfiguration config)
+static string GenerateJwtToken(ApplicationUser user, string jwtKey, string jwtIssuer, string jwtAudience, int jwtExpiryMin)
 {
-    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]
-        ?? throw new InvalidOperationException("Jwt:Key is not configured.")));
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(jwtKey));
     var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
-    var expiry = int.Parse(config["Jwt:ExpiryMinutes"] ?? "60");
 
     var claims = new[]
     {
@@ -134,10 +132,10 @@ static string GenerateJwtToken(ApplicationUser user, IConfiguration config)
     };
 
     var token = new JwtSecurityToken(
-        issuer: config["Jwt:Issuer"],
-        audience: config["Jwt:Audience"],
+        issuer: jwtIssuer,
+        audience: jwtAudience,
         claims: claims,
-        expires: DateTime.UtcNow.AddMinutes(expiry),
+        expires: DateTime.UtcNow.AddMinutes(jwtExpiryMin),
         signingCredentials: creds);
 
     return new JwtSecurityTokenHandler().WriteToken(token);
@@ -145,3 +143,5 @@ static string GenerateJwtToken(ApplicationUser user, IConfiguration config)
 
 record RegisterRequest(string Username, string Password);
 record LoginRequest(string Username, string Password);
+
+public partial class Program { }
