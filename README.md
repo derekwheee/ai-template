@@ -119,7 +119,14 @@ MyApp/                    # .NET 10 solution
   MyApp.AppHost/          # Aspire orchestrator — wires API + React npm app
   MyApp.ServiceDefaults/  # Shared Aspire observability config
   MyApp.Api/
-    Program.cs            # All service registration + Minimal API endpoints
+    Program.cs            # Thin wiring — AddServiceDefaults, AddApplicationServices, MapAuthEndpoints
+    Config/
+      JwtSettings.cs      # Typed record for JWT config; registered as singleton in DI
+    Extensions/
+      ServiceCollectionExtensions.cs  # AddApplicationServices — EF Core, Identity, JWT, CORS
+      WebApplicationExtensions.cs     # ApplyMigrations, UseApplicationMiddleware
+    Routes/
+      AuthRoutes.cs       # MapAuthEndpoints — register, login, me handlers + GenerateJwtToken
     Data/
       AppDbContext.cs      # IdentityDbContext<ApplicationUser> + SQLite
       ApplicationUser.cs  # Extends IdentityUser (add custom fields here)
@@ -145,7 +152,8 @@ my-app/                   # React + Vite frontend
 
 ### Backend (`MyApp/`)
 
-- All API logic lives in `Program.cs` using **Minimal APIs** — no controllers.
+- All API logic uses **Minimal APIs** — no controllers. Route handlers live in `Routes/`, wired up via `MapAuthEndpoints()` in `Program.cs`.
+- Service registration is split into extension methods in `Extensions/` to keep `Program.cs` as a thin orchestrator.
 - **SQLite** database (`MyApp.Api/app.db`) with **EF Core** + ASP.NET Core Identity.
 - **JWT authentication**: tokens are issued on login and validated on protected endpoints.
 - EF Core migrations are **applied automatically on startup** in the `Development` environment.
@@ -175,7 +183,7 @@ The token is stored in `localStorage` via `setToken()` in `lib/auth.ts`.
 
 ### Add a new API endpoint 📦
 
-Add `app.MapGet/Post/...` in `MyApp.Api/Program.cs`. Group related endpoints with `app.MapGroup(...)`.
+Create a handler in an existing file under `Routes/`, or add a new `Routes/SomethingRoutes.cs` with a `MapSomethingEndpoints()` extension method and call it from `Program.cs`. Group related endpoints with `app.MapGroup(...)`.
 
 ### Add a new database entity 📦
 
