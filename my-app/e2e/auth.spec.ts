@@ -10,7 +10,7 @@ async function setAuthToken(page: Page, token = FAKE_TOKEN): Promise<void> {
 
 /** Mocks GET /api/auth/me with a successful user response. */
 async function mockMe(page: Page, user = FAKE_USER): Promise<void> {
-    await page.route("/api/auth/me", (route) => route.fulfill({ json: user }));
+    await page.route("**/api/auth/me", (route) => route.fulfill({ json: user }));
 }
 
 test.describe("Login page", () => {
@@ -37,7 +37,7 @@ test.describe("Login page", () => {
     });
 
     test("redirects to dashboard on successful login", async ({ page }) => {
-        await page.route("/api/auth/login", (route) =>
+        await page.route("**/api/auth/login", (route) =>
             route.fulfill({ json: { token: FAKE_TOKEN, username: "alice" } })
         );
         await mockMe(page);
@@ -52,7 +52,7 @@ test.describe("Login page", () => {
     });
 
     test("shows error message on failed login", async ({ page }) => {
-        await page.route("/api/auth/login", (route) =>
+        await page.route("**/api/auth/login", (route) =>
             route.fulfill({ status: 401, json: {} })
         );
 
@@ -92,13 +92,13 @@ test.describe("Register page", () => {
     });
 
     test("redirects to dashboard after successful registration", async ({ page }) => {
-        await page.route("/api/auth/register", (route) =>
+        await page.route("**/api/auth/register", (route) =>
             route.fulfill({ json: { message: "User created" } })
         );
-        await page.route("/api/auth/login", (route) =>
+        await page.route("**/api/auth/login", (route) =>
             route.fulfill({ json: { token: FAKE_TOKEN, username: "newuser" } })
         );
-        await page.route("/api/auth/me", (route) =>
+        await page.route("**/api/auth/me", (route) =>
             route.fulfill({ json: { id: "2", username: "newuser" } })
         );
 
