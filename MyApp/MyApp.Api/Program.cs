@@ -28,7 +28,9 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 .AddDefaultTokenProviders();
 
 // JWT auth
-var jwtKey = builder.Configuration["Jwt:Key"]!;
+var jwtKey = builder.Configuration["Jwt:Key"];
+if (string.IsNullOrEmpty(jwtKey))
+    throw new InvalidOperationException("Jwt:Key is not configured. Set it in appsettings.json or via an environment variable.");
 var jwtIssuer = builder.Configuration["Jwt:Issuer"]!;
 var jwtAudience = builder.Configuration["Jwt:Audience"]!;
 
@@ -119,7 +121,8 @@ app.Run();
 
 static string GenerateJwtToken(ApplicationUser user, IConfiguration config)
 {
-    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]!));
+    var key = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(config["Jwt:Key"]
+        ?? throw new InvalidOperationException("Jwt:Key is not configured.")));
     var creds = new SigningCredentials(key, SecurityAlgorithms.HmacSha256);
     var expiry = int.Parse(config["Jwt:ExpiryMinutes"] ?? "60");
 
