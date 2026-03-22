@@ -100,6 +100,7 @@ GitHub Actions runs automatically on every push and pull request to `main` (see 
 |-----|-------|
 | **.NET build & test** | restore → build (Release) → test |
 | **Frontend lint & build** | `npm ci` → lint → `npm run build` |
+| **Playwright E2E** | `npm ci` → install browsers → `npm run test:e2e` (report uploaded as artifact) |
 
 ## Build, test & lint
 
@@ -112,8 +113,9 @@ dotnet test --filter "Name=MyTest"   # run a specific test
 
 # React — run inside the container 📦
 cd my-app
-npm run build    # type-check + Vite production build
+npm run build       # type-check + Vite production build
 npm run lint
+npm run test:e2e    # Playwright E2E tests (requires npm run dev or a running server)
 ```
 
 ## Project structure
