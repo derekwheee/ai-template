@@ -92,6 +92,15 @@ npm run dev
 
 > When running the React app standalone (without Aspire), it proxies `/api` to `http://localhost:5000` by default.
 
+## CI
+
+GitHub Actions runs automatically on every push and pull request to `main` (see `.github/workflows/ci.yml`):
+
+| Job | Steps |
+|-----|-------|
+| **.NET build & test** | restore → build (Release) → test |
+| **Frontend lint & build** | `npm ci` → lint → `npm run build` |
+
 ## Build, test & lint
 
 ```bash
