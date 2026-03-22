@@ -8,7 +8,7 @@ using MyApp.Api.Data;
 
 namespace MyApp.Api.Extensions;
 
-internal static class ServiceCollectionExtensions
+internal static class WebApplicationBuilderExtensions
 {
     internal static WebApplicationBuilder AddApplicationServices(this WebApplicationBuilder builder)
     {
