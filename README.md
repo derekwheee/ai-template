@@ -105,7 +105,7 @@ Three MCP (Model Context Protocol) servers are pre-configured in `.vscode/mcp.js
 | **Playwright** (`@playwright/mcp`) | Browser control to interact with and test the running app |
 | **shadcn** (`shadcn@latest mcp`) | Browse, search, and install shadcn/ui components using natural language |
 
-The GitHub MCP server binary is installed automatically by `post-create.sh`. SQLite and Playwright are downloaded on first use via `npx`.
+The GitHub MCP server binary is installed automatically by `post-create.sh`. SQLite, Playwright, and shadcn are downloaded on first use via `npx`.
 
 ## Running the app
 
