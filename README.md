@@ -4,6 +4,47 @@ A VS Code Dev Container with a full-stack scaffold ready to use: a .NET 10 + Asp
 
 > **Host vs container:** Commands marked 🖥️ run on your **host machine**. Commands marked 📦 run **inside the dev container** (i.e. in the VS Code integrated terminal after reopening in container).
 
+## Host requirements
+
+You need the following installed on your machine before you start:
+
+| Requirement | Notes |
+|---|---|
+| [VS Code](https://code.visualstudio.com/) | Any recent version |
+| [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) | `ms-vscode-remote.remote-containers` |
+| [Docker Desktop](https://www.docker.com/products/docker-desktop/) | macOS / Windows. Linux users can use [Docker Engine](https://docs.docker.com/engine/install/) instead. |
+| Git | For cloning. Already included on macOS; install via your package manager on Linux or [git-scm.com](https://git-scm.com/) on Windows. |
+
+Everything else (.NET, Node.js, all CLIs) is installed automatically inside the container — nothing else needed on the host.
+
+## Using this template
+
+### Option A — GitHub template (recommended) 🖥️
+
+Click **Use this template → Create a new repository** at the top of this page on GitHub, or run:
+
+```bash
+gh repo create my-new-project --template derekwheee/ai-template --private --clone
+cd my-new-project
+```
+
+This creates a fresh repo under your account with no commit history from this template.
+
+### Option B — Clone and re-initialise 🖥️
+
+```bash
+git clone https://github.com/derekwheee/ai-template.git my-new-project
+cd my-new-project
+rm -rf .git
+git init && git add . && git commit -m "Initial commit"
+```
+
+Push to your own remote when ready:
+
+```bash
+gh repo create my-new-project --private --source . --push
+```
+
 ## What's included
 
 | Tool | Version | Notes |
