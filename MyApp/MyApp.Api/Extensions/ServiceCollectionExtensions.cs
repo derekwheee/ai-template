@@ -8,7 +8,7 @@ using MyApp.Api.Data;
 
 namespace MyApp.Api.Extensions;
 
-internal static class ServiceCollectionExtensions
+internal static class WebApplicationBuilderExtensions
 {
     internal static WebApplicationBuilder AddApplicationServices(this WebApplicationBuilder builder)
     {
@@ -66,16 +66,21 @@ internal static class ServiceCollectionExtensions
     private static JwtSettings BuildAndValidateJwtSettings(IConfiguration config)
     {
         var key = config["Jwt:Key"];
-        if (string.IsNullOrEmpty(key))
+        if (string.IsNullOrWhiteSpace(key))
             throw new InvalidOperationException(
                 "Jwt:Key is not configured. Set it in appsettings.json or via an environment variable.");
 
+        // Enforce a minimal key length to avoid trivially weak signing keys.
+        // Adjust the threshold as needed for your security requirements.
+        if (key.Length < 16)
+            throw new InvalidOperationException("Jwt:Key is too short. Use a longer, high-entropy secret key.");
+
         var issuer = config["Jwt:Issuer"];
-        if (string.IsNullOrEmpty(issuer))
+        if (string.IsNullOrWhiteSpace(issuer))
             throw new InvalidOperationException("Jwt:Issuer is not configured.");
 
         var audience = config["Jwt:Audience"];
-        if (string.IsNullOrEmpty(audience))
+        if (string.IsNullOrWhiteSpace(audience))
             throw new InvalidOperationException("Jwt:Audience is not configured.");
 
         if (!int.TryParse(config["Jwt:ExpiryMinutes"], out var expiryMinutes))
