@@ -1,0 +1,71 @@
+{
+  "name": "AI Agent Environment",
+  "image": "mcr.microsoft.com/devcontainers/base:ubuntu-24.04",
+
+  // Install tools via devcontainer features
+  "features": {
+    "ghcr.io/devcontainers/features/git:1": {
+      "version": "latest",
+      "ppa": true
+    },
+    "ghcr.io/devcontainers/features/dotnet:2": {
+      "version": "10.0",
+      "installUsingApt": false
+    },
+    "ghcr.io/devcontainers/features/github-cli:1": {
+      "version": "latest"
+    },
+    "ghcr.io/devcontainers/features/node:1": {
+      "version": "lts",
+      "nodeGypDependencies": true
+    }
+  },
+
+  // Run setup after the container is created
+  "postCreateCommand": "bash .devcontainer/post-create.sh",
+
+  // Forward common ports: Aspire dashboard, ASP.NET (HTTP/HTTPS), Vite dev server
+  "forwardPorts": [18888, 5000, 5001, 7000, 5173],
+  "portsAttributes": {
+    "18888": { "label": "Aspire Dashboard", "onAutoForward": "notify" },
+    "5000":  { "label": "ASP.NET HTTP",     "onAutoForward": "silent" },
+    "5001":  { "label": "ASP.NET HTTPS",    "onAutoForward": "silent" },
+    "7000":  { "label": "ASP.NET Alt",      "onAutoForward": "silent" },
+    "5173":  { "label": "Vite Dev Server",  "onAutoForward": "notify" }
+  },
+
+  "customizations": {
+    "vscode": {
+      "extensions": [
+        // .NET / Aspire
+        "ms-dotnettools.csharp",
+        "ms-dotnettools.csdevkit",
+        "ms-dotnettools.vscode-dotnet-runtime",
+        // Node / React / Vite
+        "dbaeumer.vscode-eslint",
+        "esbenp.prettier-vscode",
+        // General
+        "github.copilot",
+        "github.copilot-chat",
+        "eamodio.gitlens"
+      ],
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "editor.formatOnSave": true,
+        "editor.defaultFormatter": "esbenp.prettier-vscode",
+        "[csharp]": {
+          "editor.defaultFormatter": "ms-dotnettools.csharp"
+        }
+      }
+    }
+  },
+
+  "remoteUser": "vscode",
+
+  // Forward GH_TOKEN from the host for Copilot CLI authentication (no keychain in Linux containers).
+  // On your host, set GH_TOKEN to a fine-grained PAT with the "Copilot Requests" permission.
+  // See: https://github.com/settings/personal-access-tokens/new
+  "remoteEnv": {
+    "GH_TOKEN": "${localEnv:GH_TOKEN}"
+  }
+}
