@@ -56,6 +56,8 @@ gh repo create my-new-project --private --source . --push
 | Vite / create-vite | Latest | Installed globally in `post-create.sh` |
 | GitHub CLI (`gh`) | Latest | Via devcontainer feature |
 | GitHub Copilot CLI | Latest | `copilot` command, installed in `post-create.sh` |
+| OpenAI Codex CLI | Latest | `codex` command, installed in `post-create.sh` |
+| Anthropic Claude Code | Latest | `claude` command, installed in `post-create.sh` |
 
 ## Forwarded ports
 
@@ -68,28 +70,63 @@ gh repo create my-new-project --private --source . --push
 
 ## Setup
 
-### 1. One-time host setup — Copilot CLI authentication 🖥️
+### 1. One-time host setup — AI CLI authentication 🖥️
 
-Linux containers have no keychain, so the Copilot CLI authenticates via a `GH_TOKEN` environment variable forwarded from your host machine.
+All three CLIs authenticate via environment variables forwarded from your host. Linux containers have no keychain, so credentials must live in your host shell profile. **Set up whichever CLI(s) you plan to use.**
+
+Add the relevant exports to your `~/.zshrc` or `~/.bashrc`, then reload (`source ~/.zshrc`):
+
+---
+
+#### GitHub Copilot CLI (`copilot`)
+
+Requires a GitHub fine-grained PAT with **Copilot Requests (read-only)** permission.
 
 1. Go to https://github.com/settings/personal-access-tokens/new
 2. Under **Permissions → Account permissions**, add **Copilot Requests** (read-only)
-3. Generate the token and add it to your shell profile:
+3. Add to your shell profile:
 
 ```bash
-# ~/.zshrc or ~/.bashrc  (run on your host machine)
 export GH_TOKEN=github_pat_...
 ```
 
-4. Reload your shell: `source ~/.zshrc`
+---
 
-The token is forwarded automatically into the container — no `gh auth login` needed.
+#### OpenAI Codex CLI (`codex`)
+
+Requires an OpenAI API key.
+
+1. Go to https://platform.openai.com/api-keys and create a key
+2. Add to your shell profile:
+
+```bash
+export OPENAI_API_KEY=sk-...
+```
+
+---
+
+#### Anthropic Claude Code (`claude`)
+
+Requires an Anthropic API key.
+
+1. Go to https://console.anthropic.com/settings/keys and create a key
+2. Add to your shell profile:
+
+```bash
+export ANTHROPIC_API_KEY=sk-ant-...
+```
+
+---
+
+All configured variables are forwarded automatically into the container — no interactive login needed.
 
 ### 2. Open in container 🖥️
 
 1. Open this folder in VS Code.
 2. When prompted, click **Reopen in Container** (or run `Dev Containers: Reopen in Container` from the command palette).
-3. Wait for the container to build and `post-create.sh` to finish (installs Aspire workload, Copilot CLI, and global npm tools).
+3. Wait for the container to build and `post-create.sh` to finish (installs Aspire workload, all AI CLIs, and global npm tools).
+
+> **⚠️ Watch for prompts during setup.** Some steps in `post-create.sh` (particularly the AI CLI installers) may pause and wait for keyboard input — for example, to accept a terms-of-service agreement. VS Code does not automatically focus the terminal when this happens, so the build can appear to be hung. If the container seems stuck, open the terminal panel (**View → Terminal**) or check the **Dev Containers** output panel (**View → Output**, then select *Dev Containers* from the dropdown) and press Enter or follow any on-screen prompt to continue.
 
 ### 3. Install frontend dependencies 📦
 
@@ -97,6 +134,19 @@ The token is forwarded automatically into the container — no `gh auth login` n
 cd my-app
 npm install
 ```
+
+## MCP servers
+
+Three MCP (Model Context Protocol) servers are pre-configured in `.vscode/mcp.json` (Copilot Chat) and `.mcp.json` (Claude Code):
+
+| Server | What it gives AI agents |
+|---|---|
+| **GitHub** (`github-mcp-server`) | Read/write access to issues, PRs, and Actions — uses `GH_TOKEN` automatically |
+| **SQLite** (`@modelcontextprotocol/server-sqlite`) | Direct read/query access to the app's local SQLite database (`MyApp/MyApp.Api/app.db`) |
+| **Playwright** (`@playwright/mcp`) | Browser control to interact with and test the running app |
+| **shadcn** (`shadcn@latest mcp`) | Browse, search, and install shadcn/ui components using natural language |
+
+The GitHub MCP server binary is installed automatically by `post-create.sh`. SQLite, Playwright, and shadcn are downloaded on first use via `npx`.
 
 ## Running the app
 

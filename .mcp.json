@@ -1,0 +1,20 @@
+{
+    "mcpServers": {
+        "github": {
+            "command": "sh",
+            "args": ["-c", "GITHUB_PERSONAL_ACCESS_TOKEN=\"$GH_TOKEN\" github-mcp-server stdio"]
+        },
+        "sqlite": {
+            "command": "npx",
+            "args": ["-y", "@modelcontextprotocol/server-sqlite", "./MyApp/MyApp.Api/app.db"]
+        },
+        "playwright": {
+            "command": "npx",
+            "args": ["-y", "@playwright/mcp"]
+        },
+        "shadcn": {
+            "command": "npx",
+            "args": ["-y", "shadcn@latest", "mcp"]
+        }
+    }
+}

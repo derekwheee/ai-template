@@ -62,10 +62,12 @@
 
   "remoteUser": "vscode",
 
-  // Forward GH_TOKEN from the host for Copilot CLI authentication (no keychain in Linux containers).
-  // On your host, set GH_TOKEN to a fine-grained PAT with the "Copilot Requests" permission.
-  // See: https://github.com/settings/personal-access-tokens/new
+  // Forward AI CLI credentials from the host.
+  // Set whichever keys apply to your chosen CLI(s) in your host shell profile.
+  // See README → Setup for per-CLI instructions.
   "remoteEnv": {
-    "GH_TOKEN": "${localEnv:GH_TOKEN}"
+    "GH_TOKEN": "${localEnv:GH_TOKEN}",
+    "OPENAI_API_KEY": "${localEnv:OPENAI_API_KEY}",
+    "ANTHROPIC_API_KEY": "${localEnv:ANTHROPIC_API_KEY}"
   }
 }
