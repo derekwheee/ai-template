@@ -21,7 +21,7 @@
         "shadcn": {
             "type": "stdio",
             "command": "npx",
-            "args": ["shadcn@latest", "mcp"]
+            "args": ["-y", "shadcn@latest", "mcp"]
         }
     }
 }
