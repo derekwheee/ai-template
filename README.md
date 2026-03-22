@@ -85,12 +85,27 @@ All configured variables are forwarded automatically into the container — no i
 2. When prompted, click **Reopen in Container** (or run `Dev Containers: Reopen in Container` from the command palette).
 3. Wait for the container to build and `post-create.sh` to finish (installs Aspire workload, all AI CLIs, and global npm tools).
 
+> **⚠️ Watch for prompts during setup.** Some steps in `post-create.sh` (particularly the AI CLI installers) may pause and wait for keyboard input — for example, to accept a terms-of-service agreement. VS Code does not automatically focus the terminal when this happens, so the build can appear to be hung. If the container seems stuck, open the terminal panel (**View → Terminal**) or check the **Dev Containers** output panel (**View → Output**, then select *Dev Containers* from the dropdown) and press Enter or follow any on-screen prompt to continue.
+
 ### 3. Install frontend dependencies 📦
 
 ```bash
 cd my-app
 npm install
 ```
+
+## MCP servers
+
+Three MCP (Model Context Protocol) servers are pre-configured in `.vscode/mcp.json` (Copilot Chat) and `.mcp.json` (Claude Code):
+
+| Server | What it gives AI agents |
+|---|---|
+| **GitHub** (`github-mcp-server`) | Read/write access to issues, PRs, and Actions — uses `GH_TOKEN` automatically |
+| **SQLite** (`@modelcontextprotocol/server-sqlite`) | Direct read/query access to the app's local SQLite database (`MyApp/MyApp.Api/app.db`) |
+| **Playwright** (`@playwright/mcp`) | Browser control to interact with and test the running app |
+| **shadcn** (`shadcn@latest mcp`) | Browse, search, and install shadcn/ui components using natural language |
+
+The GitHub MCP server binary is installed automatically by `post-create.sh`. SQLite and Playwright are downloaded on first use via `npx`.
 
 ## Running the app
 
