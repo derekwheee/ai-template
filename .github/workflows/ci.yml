@@ -29,7 +29,7 @@ jobs:
         run: dotnet build MyApp/MyApp.sln --no-restore --configuration Release
 
       - name: Test
-        run: dotnet test MyApp/MyApp.sln --no-build --configuration Release --logger "github;verbosity=normal"
+        run: dotnet test MyApp/MyApp.sln --no-build --configuration Release
 
   frontend:
     name: Frontend lint & build
