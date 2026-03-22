@@ -8,12 +8,12 @@ A VS Code Dev Container with a full-stack scaffold ready to use: a .NET 10 + Asp
 
 You need the following installed on your machine before you start:
 
-| Requirement | Notes |
-|---|---|
-| [VS Code](https://code.visualstudio.com/) | Any recent version |
-| [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) | `ms-vscode-remote.remote-containers` |
-| [Docker Desktop](https://www.docker.com/products/docker-desktop/) | macOS / Windows. Linux users can use [Docker Engine](https://docs.docker.com/engine/install/) instead. |
-| Git | For cloning. Already included on macOS; install via your package manager on Linux or [git-scm.com](https://git-scm.com/) on Windows. |
+| Requirement                                                                                                        | Notes                                                                                                                                |
+| ------------------------------------------------------------------------------------------------------------------ | ------------------------------------------------------------------------------------------------------------------------------------ |
+| [VS Code](https://code.visualstudio.com/)                                                                          | Any recent version                                                                                                                   |
+| [Dev Containers extension](https://marketplace.visualstudio.com/items?itemName=ms-vscode-remote.remote-containers) | `ms-vscode-remote.remote-containers`                                                                                                 |
+| [Docker Desktop](https://www.docker.com/products/docker-desktop/)                                                  | macOS / Windows. Linux users can use [Docker Engine](https://docs.docker.com/engine/install/) instead.                               |
+| Git                                                                                                                | For cloning. Already included on macOS; install via your package manager on Linux or [git-scm.com](https://git-scm.com/) on Windows. |
 
 Everything else (.NET, Node.js, all CLIs) is installed automatically inside the container — nothing else needed on the host.
 
@@ -47,26 +47,26 @@ gh repo create my-new-project --private --source . --push
 
 ## What's included
 
-| Tool | Version | Notes |
-|---|---|---|
-| Git | Latest | Via devcontainer feature |
-| .NET SDK | 10.0 | Via devcontainer feature |
-| .NET Aspire | Latest workload | Installed in `post-create.sh` |
-| Node.js | LTS | Via devcontainer feature (nvm-managed) |
-| Vite / create-vite | Latest | Installed globally in `post-create.sh` |
-| GitHub CLI (`gh`) | Latest | Via devcontainer feature |
-| GitHub Copilot CLI | Latest | `copilot` command, installed in `post-create.sh` |
-| OpenAI Codex CLI | Latest | `codex` command, installed in `post-create.sh` |
-| Anthropic Claude Code | Latest | `claude` command, installed in `post-create.sh` |
+| Tool                  | Version         | Notes                                            |
+| --------------------- | --------------- | ------------------------------------------------ |
+| Git                   | Latest          | Via devcontainer feature                         |
+| .NET SDK              | 10.0            | Via devcontainer feature                         |
+| .NET Aspire           | Latest workload | Installed in `post-create.sh`                    |
+| Node.js               | LTS             | Via devcontainer feature (nvm-managed)           |
+| Vite / create-vite    | Latest          | Installed globally in `post-create.sh`           |
+| GitHub CLI (`gh`)     | Latest          | Via devcontainer feature                         |
+| GitHub Copilot CLI    | Latest          | `copilot` command, installed in `post-create.sh` |
+| OpenAI Codex CLI      | Latest          | `codex` command, installed in `post-create.sh`   |
+| Anthropic Claude Code | Latest          | `claude` command, installed in `post-create.sh`  |
 
 ## Forwarded ports
 
-| Port | Service |
-|---|---|
+| Port    | Service          |
+| ------- | ---------------- |
 | `18888` | Aspire Dashboard |
-| `5000` | ASP.NET HTTP |
-| `5001` | ASP.NET HTTPS |
-| `5173` | Vite Dev Server |
+| `5000`  | ASP.NET HTTP     |
+| `5001`  | ASP.NET HTTPS    |
+| `5173`  | Vite Dev Server  |
 
 ## Setup
 
@@ -126,7 +126,7 @@ All configured variables are forwarded automatically into the container — no i
 2. When prompted, click **Reopen in Container** (or run `Dev Containers: Reopen in Container` from the command palette).
 3. Wait for the container to build and `post-create.sh` to finish (installs Aspire workload, all AI CLIs, and global npm tools).
 
-> **⚠️ Watch for prompts during setup.** Some steps in `post-create.sh` (particularly the AI CLI installers) may pause and wait for keyboard input — for example, to accept a terms-of-service agreement. VS Code does not automatically focus the terminal when this happens, so the build can appear to be hung. If the container seems stuck, open the terminal panel (**View → Terminal**) or check the **Dev Containers** output panel (**View → Output**, then select *Dev Containers* from the dropdown) and press Enter or follow any on-screen prompt to continue.
+> **⚠️ Watch for prompts during setup.** Some steps in `post-create.sh` (particularly the AI CLI installers) may pause and wait for keyboard input — for example, to accept a terms-of-service agreement. VS Code does not automatically focus the terminal when this happens, so the build can appear to be hung. If the container seems stuck, open the terminal panel (**View → Terminal**) or check the **Dev Containers** output panel (**View → Output**, then select _Dev Containers_ from the dropdown) and press Enter or follow any on-screen prompt to continue.
 
 ### 3. Install frontend dependencies 📦
 
@@ -137,14 +137,14 @@ npm install
 
 ## MCP servers
 
-Three MCP (Model Context Protocol) servers are pre-configured in `.vscode/mcp.json` (Copilot Chat) and `.mcp.json` (Claude Code):
+Several MCP (Model Context Protocol) servers are pre-configured in `.vscode/mcp.json` (Copilot Chat) and `.mcp.json` (Claude Code):
 
-| Server | What it gives AI agents |
-|---|---|
-| **GitHub** (`github-mcp-server`) | Read/write access to issues, PRs, and Actions — uses `GH_TOKEN` automatically |
+| Server                                             | What it gives AI agents                                                                |
+| -------------------------------------------------- | -------------------------------------------------------------------------------------- |
+| **GitHub** (`github-mcp-server`)                   | Read/write access to issues, PRs, and Actions — uses `GH_TOKEN` automatically          |
 | **SQLite** (`@modelcontextprotocol/server-sqlite`) | Direct read/query access to the app's local SQLite database (`MyApp/MyApp.Api/app.db`) |
-| **Playwright** (`@playwright/mcp`) | Browser control to interact with and test the running app |
-| **shadcn** (`shadcn@latest mcp`) | Browse, search, and install shadcn/ui components using natural language |
+| **Playwright** (`@playwright/mcp`)                 | Browser control to interact with and test the running app                              |
+| **shadcn** (`shadcn@latest mcp`)                   | Browse, search, and install shadcn/ui components using natural language                |
 
 The GitHub MCP server binary is installed automatically by `post-create.sh`. SQLite, Playwright, and shadcn are downloaded on first use via `npx`.
 
@@ -159,11 +159,11 @@ dotnet run --project MyApp.AppHost --launch-profile http
 
 This starts both the API and the React dev server, and opens the Aspire dashboard at **http://localhost:18888**.
 
-| Service | URL |
-|---|---|
+| Service          | URL                    |
+| ---------------- | ---------------------- |
 | Aspire Dashboard | http://localhost:18888 |
-| React app | http://localhost:5173 |
-| API | http://localhost:5000 |
+| React app        | http://localhost:5173  |
+| API              | http://localhost:5000  |
 
 The Vite dev server automatically proxies `/api/*` requests to the backend, so you never need to configure CORS manually in development.
 
@@ -187,11 +187,11 @@ npm run dev
 
 GitHub Actions runs automatically on every push and pull request to `main` (see `.github/workflows/ci.yml`):
 
-| Job | Steps |
-|-----|-------|
-| **.NET build & test** | restore → build (Release) → test |
-| **Frontend lint & build** | `npm ci` → lint → `npm run build` |
-| **Playwright E2E** | `npm ci` → install browsers → `npm run test:e2e` (report uploaded as artifact) |
+| Job                       | Steps                                                                          |
+| ------------------------- | ------------------------------------------------------------------------------ |
+| **.NET build & test**     | restore → build (Release) → test                                               |
+| **Frontend lint & build** | `npm ci` → lint → `npm run build`                                              |
+| **Playwright E2E**        | `npm ci` → install browsers → `npm run test:e2e` (report uploaded as artifact) |
 
 ## Build, test & lint
 
@@ -273,11 +273,11 @@ my-app/                   # React + Vite frontend
 
 ## Auth flow
 
-| Step | Endpoint | Notes |
-|---|---|---|
-| Register | `POST /api/auth/register` | Body: `{ username, password }` |
-| Login | `POST /api/auth/login` | Returns `{ token, username }` |
-| Get current user | `GET /api/auth/me` | Requires `Authorization: Bearer <token>` |
+| Step             | Endpoint                  | Notes                                    |
+| ---------------- | ------------------------- | ---------------------------------------- |
+| Register         | `POST /api/auth/register` | Body: `{ username, password }`           |
+| Login            | `POST /api/auth/login`    | Returns `{ token, username }`            |
+| Get current user | `GET /api/auth/me`        | Requires `Authorization: Bearer <token>` |
 
 The token is stored in `localStorage` via `setToken()` in `lib/auth.ts`.
 
