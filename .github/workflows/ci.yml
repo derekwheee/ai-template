@@ -1,0 +1,58 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+jobs:
+  dotnet:
+    name: .NET build & test
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Install Aspire workload
+        run: dotnet workload install aspire
+
+      - name: Restore
+        run: dotnet restore MyApp/MyApp.sln
+
+      - name: Build
+        run: dotnet build MyApp/MyApp.sln --no-restore --configuration Release
+
+      - name: Test
+        run: dotnet test MyApp/MyApp.sln --no-build --configuration Release --logger "github;verbosity=normal"
+
+  frontend:
+    name: Frontend lint & build
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "lts/*"
+          cache: "npm"
+          cache-dependency-path: my-app/package-lock.json
+
+      - name: Install dependencies
+        run: npm ci
+        working-directory: my-app
+
+      - name: Lint
+        run: npm run lint
+        working-directory: my-app
+
+      - name: Build
+        run: npm run build
+        working-directory: my-app
