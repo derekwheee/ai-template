@@ -13,7 +13,7 @@ gh release download \
   --repo github/github-mcp-server \
   --pattern "github-mcp-server_Linux_${_mcp_arch}.tar.gz" \
   --output /tmp/github-mcp-server.tar.gz
-tar -xzf /tmp/github-mcp-server.tar.gz -C /usr/local/bin github-mcp-server
+sudo tar -xzf /tmp/github-mcp-server.tar.gz -C /usr/local/bin github-mcp-server
 rm -f /tmp/github-mcp-server.tar.gz
 
 echo "==> Installing OpenAI Codex CLI..."
