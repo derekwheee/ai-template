@@ -115,7 +115,7 @@ dotnet test --filter "Name=MyTest"   # run a specific test
 cd my-app
 npm run build       # type-check + Vite production build
 npm run lint
-npm run test:e2e    # Playwright E2E tests (requires npm run dev or a running server)
+npm run test:e2e    # Playwright E2E tests (dev server is started/reused automatically via Playwright webServer)
 ```
 
 ## Project structure
