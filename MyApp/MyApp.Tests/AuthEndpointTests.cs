@@ -25,8 +25,9 @@ public sealed class RegisterTests : IClassFixture<TestWebApplicationFactory>
     [Fact]
     public async Task Register_DuplicateUsername_Returns400()
     {
-        await _client.PostAsJsonAsync("/api/auth/register",
+        var first = await _client.PostAsJsonAsync("/api/auth/register",
             new { username = "bob", password = "password123" });
+        Assert.Equal(HttpStatusCode.OK, first.StatusCode);
 
         var response = await _client.PostAsJsonAsync("/api/auth/register",
             new { username = "bob", password = "different-password" });
@@ -103,10 +104,12 @@ public sealed class MeTests : IClassFixture<TestWebApplicationFactory>
             new { username = "frank", password = "password123" });
         var loginRes = await client.PostAsJsonAsync("/api/auth/login",
             new { username = "frank", password = "password123" });
+        Assert.Equal(HttpStatusCode.OK, loginRes.StatusCode);
         var login = await loginRes.Content.ReadFromJsonAsync<LoginResponse>();
+        Assert.NotNull(login?.Token);
 
         client.DefaultRequestHeaders.Authorization =
-            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", login!.Token);
+            new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", login.Token);
 
         var response = await client.GetAsync("/api/auth/me");
 
@@ -142,7 +145,7 @@ public sealed class StartupValidationTests
     {
         // "Testing" environment loads only appsettings.json (Jwt:Key = ""),
         // not appsettings.Development.json, so the guard in Program.cs fires.
-        var factory = new WebApplicationFactory<Program>()
+        using var factory = new WebApplicationFactory<Program>()
             .WithWebHostBuilder(builder => builder.UseEnvironment("Testing"));
 
         var ex = Record.Exception(() => factory.CreateClient());

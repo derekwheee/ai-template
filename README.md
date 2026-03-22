@@ -125,6 +125,7 @@ MyApp/                    # .NET 10 solution
       ApplicationUser.cs  # Extends IdentityUser (add custom fields here)
     Migrations/           # EF Core migrations (auto-applied on startup in dev)
     appsettings.json      # JWT config, connection string, allowed origins
+  MyApp.Tests/            # xUnit integration tests (WebApplicationFactory)
 my-app/                   # React + Vite frontend
   src/
     main.tsx              # QueryClient + RouterProvider setup

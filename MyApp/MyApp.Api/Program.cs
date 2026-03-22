@@ -31,9 +31,14 @@ builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options =>
 var jwtKey = builder.Configuration["Jwt:Key"];
 if (string.IsNullOrEmpty(jwtKey))
     throw new InvalidOperationException("Jwt:Key is not configured. Set it in appsettings.json or via an environment variable.");
-var jwtIssuer    = builder.Configuration["Jwt:Issuer"]!;
-var jwtAudience  = builder.Configuration["Jwt:Audience"]!;
-var jwtExpiryMin = int.Parse(builder.Configuration["Jwt:ExpiryMinutes"] ?? "60");
+var jwtIssuer = builder.Configuration["Jwt:Issuer"];
+if (string.IsNullOrEmpty(jwtIssuer))
+    throw new InvalidOperationException("Jwt:Issuer is not configured.");
+var jwtAudience = builder.Configuration["Jwt:Audience"];
+if (string.IsNullOrEmpty(jwtAudience))
+    throw new InvalidOperationException("Jwt:Audience is not configured.");
+if (!int.TryParse(builder.Configuration["Jwt:ExpiryMinutes"], out var jwtExpiryMin))
+    jwtExpiryMin = 60;
 
 builder.Services.AddAuthentication(options =>
 {
