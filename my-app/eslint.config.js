@@ -20,4 +20,14 @@ export default defineConfig([
       globals: globals.browser,
     },
   },
+  {
+    // shadcn/ui components intentionally export both components and utility
+    // functions (e.g. buttonVariants) from the same file. Disable the Fast
+    // Refresh rule for generated UI files so future `npx shadcn add` runs
+    // don't introduce new lint errors.
+    files: ['src/components/ui/**/*.{ts,tsx}'],
+    rules: {
+      'react-refresh/only-export-components': 'off',
+    },
+  },
 ])
